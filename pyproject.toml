@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dynamic-calendar"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.14"
+dependencies = [
+    "google-api-python-client",
+    "google-auth-oauthlib",
+    "requests",
+    "fastapi",
+    "uvicorn",
+    "pytz",
+    "ipykernel>=7.3.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/utilities", "src/calendar", "src/organization"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src" = ""
