@@ -26,4 +26,4 @@ def get_calendar_service():
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
 
-    return build('calendar', 'v3', credentials=creds)
+    return build('calendarAPI', 'v3', credentials=creds)

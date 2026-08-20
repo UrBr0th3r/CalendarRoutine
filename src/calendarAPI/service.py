@@ -1,4 +1,4 @@
-# src/calendar/service.py
+# src/calendarAPI/service.py
 from pathlib import Path
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -18,7 +18,7 @@ class CalendarManager:
 
     service: Resource
 
-    def __init__(self, credentials_path: str | Path = Paths.OAUTH / "credentials.json", token_path: str | Path = Paths.OAUTH / "token.json"):
+    def __init__(self, credentials_path: str | Path = Paths.OAUTH / "credentials.json", token_path: str | Path = Paths.OAUTH / "token.json", *, port: int = 2212):
         self.credentials_path = Path(credentials_path)
         self.token_path = Path(token_path)
         scopes = ['https://www.googleapis.com/auth/calendar']
@@ -38,7 +38,7 @@ class CalendarManager:
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
                     str(self.credentials_path.absolute()), scopes)
-                creds = flow.run_local_server(port=0)
+                creds = flow.run_local_server(port=port)
             # Salva le credenziali per le successive esecuzioni
             if not os.path.exists(self.token_path.parent):
                 self.token_path.parent.mkdir(parents=True, exist_ok=True)
@@ -71,5 +71,5 @@ class CalendarManager:
     #         with open(self.token_path, 'w') as token:
     #             token.write(creds.to_json())
     # 
-    #     return build('calendar', 'v3', credentials=creds)
+    #     return build('calendarAPI', 'v3', credentials=creds)
 
