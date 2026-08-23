@@ -1,27 +1,33 @@
 # src/calendarAPI/service.py
 from pathlib import Path
+from typing import TYPE_CHECKING
+
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build, Resource
+from googleapiclient.discovery import build
 import os.path
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
 
 from utilities.core import Paths
+
+if TYPE_CHECKING:
+    from googleapiclient._apis.calendar.v3 import CalendarResource
+    from googleapiclient._apis.tasks.v1 import TasksResource
 
 class CalendarManager:
     
     credentials_path: Path
     token_path: Path
 
-    service: Resource
+    calendar: CalendarResource
+    tasks: TasksResource
 
     def __init__(self, credentials_path: str | Path = Paths.OAUTH / "credentials.json", token_path: str | Path = Paths.OAUTH / "token.json", *, port: int = 2212):
         self.credentials_path = Path(credentials_path)
         self.token_path = Path(token_path)
-        scopes = ['https://www.googleapis.com/auth/calendar']
+        scopes = ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/tasks']
         
         if not self.credentials_path.exists():
             raise FileNotFoundError(f"File credenziali non trovato in: {self.credentials_path.resolve()}")
@@ -45,7 +51,8 @@ class CalendarManager:
             with open(self.token_path, 'w') as token:
                 token.write(creds.to_json())
 
-        self.service = build('calendar', 'v3', credentials=creds)
+        self.calendar = build('calendar', 'v3', credentials=creds)
+        self.tasks = build('tasks', 'v1', credentials=creds)
 
     # def authenticate(self) -> Resource:
     # 
