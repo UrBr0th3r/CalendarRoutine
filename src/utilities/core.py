@@ -16,6 +16,6 @@ class Paths(metaclass=ImmutableMeta):
     PROJECT = _ROOT
     PRIVATE = _ROOT / "private"
     OAUTH = _ROOT / "private" / "OAuth"
-    EVENTS = _ROOT / "events"
+    EVENTS = _ROOT / "resources"
     SRC = _ROOT / "src"
 
