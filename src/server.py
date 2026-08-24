@@ -60,7 +60,6 @@ if __name__ == '__main__':
     )
 
     pass
-    # DOING: APRI FASTAPI
     # cmg = CalendarManager()
 
     # now = datetime.now(timezone.utc)

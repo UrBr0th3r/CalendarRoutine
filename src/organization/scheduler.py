@@ -19,6 +19,7 @@ def load(filepath: Path):
     found = EventFactory.parse_yaml(filepath, override_now_time=now)
 
     ret = EventFactory.organize(*([f for f in es+found if isinstance(f, TimedEvent)]))
+    print(ret)
 
     for e in ret:
         if e.id is None:

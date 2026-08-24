@@ -52,6 +52,7 @@ class DailyTask(BaseModel, Serializable):
     @classmethod
     def from_google(cls, task: CalendarTask ):
         return cls(
+            id=task["id"],
             title=task["title"],
             notes=task.get("notes", None),
             due=datetime.fromisoformat(task["due"])
@@ -97,13 +98,15 @@ class FullDayEvent(BaseModel, Serializable):
     @classmethod
     def from_google(cls, event: CalendarEvent):
         return cls(
+            id=event["id"],
             title=event["summary"],
             description=event.get("description",None),
             day=date.fromisoformat(event["start"]["date"]),
             reminders=[Reminder(method=r["method"], minutes=r["minutes"]) for r in event.get("reminders", {}).get("overrides", [])]
         )
 
-# TODO: usa gli eventi full day / le tasks (quando implementano gli orari) come condizionali, tipo se festa -> non aggiungere studio
+# DOING: usa gli eventi full day / le tasks (quando implementano gli orari) come condizionali, tipo se festa -> non aggiungere studio
+#  e IMPORTANTISSIMO: Crea il "periodo di giorno" ovvero le 16/17 ore di attività in cui si possono spreaddare gli elementi, altrimenti devono cercare un altro posto
 
 class TimedEvent(BaseModel, Serializable, ABC):
     """
@@ -206,6 +209,7 @@ class TimedEvent(BaseModel, Serializable, ABC):
     @classmethod
     def from_google(cls, event: CalendarEvent):
         return cls(
+            id=event["id"],
             title=event["summary"],
             description=event.get("description", None),
             start=datetime.fromisoformat(event["start"]["dateTime"]).astimezone(

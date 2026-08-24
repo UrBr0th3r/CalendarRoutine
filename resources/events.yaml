@@ -43,6 +43,15 @@
     - minutes: 0
 
 - kind: "Shiftable"
+  title: "NTK"
+  shift_start: 14:30:00
+  duration: 00:45:00
+  reminders:
+    - minutes: 0
+
+
+
+- kind: "Shiftable"
   title: "Medicine (omogenizzate)"
   shift_start: 15:30:00
   shift_end: 15:35:00
