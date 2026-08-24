@@ -19,7 +19,7 @@ from pathlib import Path
 from organization.event.event import TimedEvent
 
 app = FastAPI(title="Calendar Routine API")
-DEFAULT_YAML_PATH = Path(r"C:\Users\popis\PycharmProjects\Calendar\resources\events.yaml")
+DEFAULT_YAML_PATH = Path("../resources/events.yaml")
 @app.post("/sync")
 def sync_calendar(yaml_path: Optional[str] = None):
     """
@@ -45,11 +45,15 @@ def sync_calendar(yaml_path: Optional[str] = None):
         # Registra l'eccezione nei log se necessario
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/test/")
+def test():
+    return {"status": "ok"}
+
 if __name__ == '__main__':
 
     uvicorn.run(
         app,  # Modifica "main" con il nome reale del tuo file .py (es: "api:app")
-        host="127.0.0.1",
+        host="0.0.0.0",
         port=2442,
         # reload=True  # Ricarica automatica in fase di sviluppo al salvataggio
     )
