@@ -17,9 +17,10 @@ import requests
 from fastapi import FastAPI, HTTPException
 from pathlib import Path
 from organization.event.event import TimedEvent
+from utilities.core import Paths
 
 app = FastAPI(title="Calendar Routine API")
-DEFAULT_YAML_PATH = Path("../resources/events.yaml")
+DEFAULT_YAML_PATH = Path(Paths.EVENTS / "events.yaml")
 @app.post("/sync")
 def sync_calendar(yaml_path: Optional[str] = None):
     """
