@@ -10,10 +10,12 @@ import os.path
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.errors import HttpError
 
 from organization.event.event import Serializable
 from utilities.core import Paths
 from organization.event import possibleAllTypes, FixedEvent, FocusedEvent, DailyTask, FullDayEvent
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 if TYPE_CHECKING:
     from googleapiclient._apis.calendar.v3 import CalendarResource
@@ -83,8 +85,12 @@ class CalendarManager:
     # 
     #     return build('calendarAPI', 'v3', credentials=creds)
 
-
-
+    @retry(
+        retry=retry_if_exception_type(HttpError),
+        stop=stop_after_attempt(5),
+        wait=wait_exponential(multiplier=1, min=1, max=10),
+        reraise=True,
+    )
     def get_events(self, calendar_id: str = "primary", start: Optional[datetime] = None, end: Optional[datetime] = None, duration: Optional[timedelta] = None, max_results: int = 10) -> list[possibleAllTypes]:
         if start is None:
             start = datetime.now()
@@ -102,6 +108,12 @@ class CalendarManager:
         # print(events_result.get("items", []))
         return [ FocusedEvent.from_google(f) if f["eventType"] == "focusTime" else (FullDayEvent.from_google(f) if "date" in f["start"] else FixedEvent.from_google(f)) for f in events_result.get('items', [])]
 
+    @retry(
+        retry=retry_if_exception_type(HttpError),
+        stop=stop_after_attempt(5),
+        wait=wait_exponential(multiplier=1, min=1, max=10),
+        reraise=True,
+    )
     def get_tasks(self, tasklist_id: str = "@default", start: Optional[datetime] = None, end: Optional[datetime] = None, duration: Optional[timedelta] = None, max_results: int = 10):
         if start is None:
             start = datetime.now()
@@ -117,15 +129,32 @@ class CalendarManager:
 
         return [DailyTask.from_google(t) for t in tasks_result.get('items', [])]
 
+    @retry(
+        retry=retry_if_exception_type(HttpError),
+        stop=stop_after_attempt(5),
+        wait=wait_exponential(multiplier=1, min=1, max=10),
+        reraise=True,
+    )
     def add_events(self, *events: Serializable, calendar_id: str = "primary"):
         for e in events:
             self.calendar.events().insert(calendarId=calendar_id, body=e.JSON()).execute()
 
+    @retry(
+        retry=retry_if_exception_type(HttpError),
+        stop=stop_after_attempt(5),
+        wait=wait_exponential(multiplier=1, min=1, max=10),
+        reraise=True,
+    )
     def add_tasks(self, *tasks: Serializable, tasks_id: str = "@default"):
         for t in tasks:
             self.tasks.tasks().insert(tasklist=tasks_id, body=t.JSON()).execute()
 
-
+    @retry(
+        retry=retry_if_exception_type(HttpError),
+        stop=stop_after_attempt(5),
+        wait=wait_exponential(multiplier=1, min=1, max=10),
+        reraise=True,
+    )
     def get_all_calendar_ids(self) -> dict[str, str]:
         """Restituisce un dizionario con la mappatura {Nome Calendario: ID Calendario}."""
         calendar_map = {}
@@ -151,6 +180,12 @@ class CalendarManager:
 
         return calendar_map
 
+    @retry(
+        retry=retry_if_exception_type(HttpError),
+        stop=stop_after_attempt(5),
+        wait=wait_exponential(multiplier=1, min=1, max=10),
+        reraise=True,
+    )
     def get_all_tasklist_ids(self) -> dict[str, str]:
         """Restituisce un dizionario con la mappatura {Nome TaskList: ID TaskList}."""
         tasklist_map = {}
