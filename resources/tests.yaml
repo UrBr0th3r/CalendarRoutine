@@ -1,0 +1,26 @@
+- kind: "Fixed"
+  title: "Test"
+  start: 24/08/2026 09:00:00
+  end: 24/08/2026 10:00:00
+
+- kind: "Fixed"
+  title: "Check"
+  start: 24/08/2026 07:00:00
+  end: 24/08/2026 09:00:00
+
+- kind: "Fixed"
+  title: "Prova"
+  shift_start: 03:00:00
+  shift_end: 05:00:00
+
+- kind: "Shiftable"
+  title: "Example Shift"
+  start: 24/08/2026 04:00:00
+  end: 24/08/2026 09:30:00
+
+- kind: "Splittable"
+  title: "Example Split"
+  start: 24/08/2026 05:00:00
+  end: 24/08/2026 10:00:00
+
+

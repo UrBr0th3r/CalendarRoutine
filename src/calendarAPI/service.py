@@ -1,6 +1,7 @@
 # src/calendarAPI/service.py
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, override
 
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -10,7 +11,9 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
+from organization.event.event import Serializable
 from utilities.core import Paths
+from organization.event import possibleAllTypes, FixedEvent, FocusedEvent, DailyTask, FullDayEvent
 
 if TYPE_CHECKING:
     from googleapiclient._apis.calendar.v3 import CalendarResource
@@ -79,4 +82,99 @@ class CalendarManager:
     #             token.write(creds.to_json())
     # 
     #     return build('calendarAPI', 'v3', credentials=creds)
+
+
+
+    def get_events(self, calendar_id: str = "primary", start: Optional[datetime] = None, end: Optional[datetime] = None, duration: Optional[timedelta] = None, max_results: int = 10) -> list[possibleAllTypes]:
+        if start is None:
+            start = datetime.now()
+        if end is None and duration is not None:
+            end = start + duration
+
+        events_result = self.calendar.events().list(
+            calendarId=calendar_id,  # 'primary' indica il calendario principale dell'utente
+            timeMin=start.astimezone(timezone.utc).isoformat(),
+            timeMax=end.astimezone(timezone.utc).isoformat() if end is not None else None,
+            maxResults=max_results,
+            singleEvents=True,
+            orderBy='startTime'
+        ).execute()
+        # print(events_result.get("items", []))
+        return [ FocusedEvent.from_google(f) if f["eventType"] == "focusTime" else (FullDayEvent.from_google(f) if "date" in f["start"] else FixedEvent.from_google(f)) for f in events_result.get('items', [])]
+
+    def get_tasks(self, tasklist_id: str = "@default", start: Optional[datetime] = None, end: Optional[datetime] = None, duration: Optional[timedelta] = None, max_results: int = 10):
+        if start is None:
+            start = datetime.now()
+        if end is None and duration is not None:
+            end = start + duration
+
+        tasks_result = self.tasks.tasks().list(
+            tasklist=tasklist_id,
+            dueMin=start.astimezone(timezone.utc).isoformat(),
+            dueMax=end.astimezone(timezone.utc).isoformat() if end is not None else None,
+            maxResults=max_results,
+        ).execute()
+
+        return [DailyTask.from_google(t) for t in tasks_result.get('items', [])]
+
+    def add_events(self, *events: Serializable, calendar_id: str = "primary"):
+        for e in events:
+            self.calendar.events().insert(calendarId=calendar_id, body=e.JSON()).execute()
+
+    def add_tasks(self, *tasks: Serializable, tasks_id: str = "@default"):
+        for t in tasks:
+            self.tasks.tasks().insert(tasklist=tasks_id, body=t.JSON()).execute()
+
+
+    def get_all_calendar_ids(self) -> dict[str, str]:
+        """Restituisce un dizionario con la mappatura {Nome Calendario: ID Calendario}."""
+        calendar_map = {}
+        page_token = None
+
+        while True:
+            # Recupera la lista dei calendari dell'utente
+            response = (
+                self.calendar.calendarList()
+                .list(pageToken=page_token)
+                .execute()
+            )
+
+            for item in response.get("items", []):
+                cal_id = item.get("id")
+                summary = item.get("summary", "Senza Nome")
+                # Se è il calendario principale, cal_id equivale a 'primary' o alla tua email
+                calendar_map[summary] = cal_id
+
+            page_token = response.get("nextPageToken")
+            if not page_token:
+                break
+
+        return calendar_map
+
+    def get_all_tasklist_ids(self) -> dict[str, str]:
+        """Restituisce un dizionario con la mappatura {Nome TaskList: ID TaskList}."""
+        tasklist_map = {}
+        page_token = None
+
+        while True:
+            # Recupera la lista delle TaskList dell'utente
+            response = (
+                self.tasks.tasklists().list(pageToken=page_token).execute()
+            )
+
+            for item in response.get("items", []):
+                list_id = item.get("id")
+                title = item.get("title", "Senza Titolo")
+                tasklist_map[title] = list_id
+
+            page_token = response.get("nextPageToken")
+            if not page_token:
+                break
+
+        return tasklist_map
+
+    # Esempio d'uso:
+    # tasklist_ids = get_all_tasklist_ids(cmg.tasks)
+    # print(tasklist_ids)
+    # Output: {'My Tasks': '@default', 'Lavoro': 'MDY2MDA0...', 'Spesa': 'MDI1Nzc...'}
 
