@@ -23,6 +23,7 @@ def load(filepath: Path):
 
     for e in ret:
         if e.id is None:
+            e.description = f"[ DYNAMICALLY ADDED ]{" "+e.description if e.description else ""}"
             print("Added",e)
             cmg.add_events(e)
         else:
