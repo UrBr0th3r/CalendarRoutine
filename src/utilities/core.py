@@ -1,6 +1,6 @@
 from pathlib import Path as _Path
 
-__all__ = ["ImmutableMeta", "Paths"]
+__all__ = ["ImmutableMeta", "Paths", "Singleton"]
 
 _ROOT = _Path(__file__).resolve().parent.parent.parent
 
@@ -19,3 +19,9 @@ class Paths(metaclass=ImmutableMeta):
     EVENTS = _ROOT / "resources"
     SRC = _ROOT / "src"
 
+class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]

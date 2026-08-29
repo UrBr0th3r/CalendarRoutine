@@ -2,6 +2,7 @@
 File di gestione e configurazione del server
 Attende la richiesta inviata dal cellulare, per permettere l'avvio dello scheduler
 """
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Optional
 
@@ -19,7 +20,13 @@ from pathlib import Path
 from organization.event.event import TimedEvent
 from utilities.core import Paths
 
-app = FastAPI(title="Calendar Routine API")
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    eventSession.load()
+    yield
+    eventSession.save()
+
+app = FastAPI(title="Calendar Routine API", lifespan=lifespan)
 DEFAULT_YAML_PATH = Path(Paths.EVENTS / "events.yaml")
 @app.post("/sync")
 def sync_calendar(yaml_path: Optional[str] = None):
@@ -56,7 +63,7 @@ if __name__ == '__main__':
         app,  # Modifica "main" con il nome reale del tuo file .py (es: "api:app")
         host="0.0.0.0",
         port=2442,
-        # reload=True  # Ricarica automatica in fase di sviluppo al salvataggio
+        # reload=True # Ricarica automatica in fase di sviluppo al salvataggio
     )
 
     pass

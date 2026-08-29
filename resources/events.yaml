@@ -1,73 +1,78 @@
+config:
+  day_duration: 16:00:00
+  day_min: 00:30:00
 
 
-- kind: "Fixed"
-  title: "Sciacquati la faccia"
-  shift_start: 00:10:00
-  shift_end: 00:11:00
-  reminders:
-    - minutes: 0
+events:
+  - kind: "Fixed"
+    title: "Sciacquati la faccia"
+    shift_start: 00:10:00
+    shift_end: 00:11:00
+    reminders:
+      - minutes: 0
 
-- kind: "Fixed"
-  title: "Shake mattutino"
-  shift_start: 00:15:00
-  shift_end: 00:25:00
-  reminders:
-    - minutes: 0
+  - kind: "Fixed"
+    title: "Shake mattutino"
+    shift_start: 00:11:00
+    shift_end: 00:25:00
+    reminders:
+      - minutes: 0
 
-- kind: "Fixed"
-  title: "Lavati i denti"
-  shift_start: 00:30:00
-  shift_end: 00:32:00
-  reminders:
-    - minutes: 0
+  - kind: "Fixed"
+    title: "Lavati i denti"
+    shift_start: 00:25:00
+    shift_end: 00:27:00
+    reminders:
+      - minutes: 0
 
-- kind: "Shiftable"
-  title: "Medicine (pastiglie)"
-  shift_start: 02:30:00
-  shift_end: 02:32:00
-  reminders:
-    - minutes: 0
+  - kind: "Shiftable"
+    title: "Medicine (pastiglie)"
+    shift_start: 02:30:00
+    shift_end: 02:32:00
+    reminders:
+      - minutes: 0
 
-- kind: "Shiftable"
-  title: "Pranzo leggero"
-  shift_start: 05:30:00
-  shift_end: 06:00:00
-  reminders:
-    - minutes: 0
+  - kind: "Shiftable"
+    title: "Pranzo leggero"
+    shift_start: 05:30:00
+    shift_end: 06:00:00
+    reminders:
+      - minutes: 0
 
-- kind: "Shiftable"
-  title: "Cena con carne (pollo)"
-  shift_start: 12:45:00
-  shift_end: 14:00:00
-  reminders:
-    - minutes: 0
+  - kind: "Shiftable"
+    title: "Cena con carne (pollo)"
+    shift_start: 12:45:00
+    shift_end: 14:00:00
+    reminders:
+      - minutes: 0
 
-- kind: "Shiftable"
-  title: "NTK"
-  shift_start: 14:30:00
-  duration: 00:45:00
-  reminders:
-    - minutes: 0
+  - kind: "Shiftable"
+    title: "NTK"
+    shift_start: 14:30:00
+    duration: 00:45:00
+    reminders:
+      - minutes: 0
 
 
 
-- kind: "Shiftable"
-  title: "Medicine (omogenizzate)"
-  shift_start: 15:30:00
-  shift_end: 15:35:00
-  reminders:
-    - minutes: 0
+  - kind: "Shiftable"
+    title: "Medicine (omogenizzate)"
+    shift_start: 15:30:00
+    shift_end: 15:35:00
+    reminders:
+      - minutes: 0
 
-- kind: "Fixed"
-  title: "Lavati i denti"
-  shift_start: 15:40:00
-  shift_end: 15:42:00
-  reminders:
-    - minutes: 0
+  - kind: "Fixed"
+    title: "Lavati i denti"
+    shift_start: 15:40:00
+    shift_end: 15:42:00
+    reminders:
+      - minutes: 0
 
-- kind: "Splittable"
-  title: "Studia"
-  shift_start: 02:00:00
-  duration: 05:00:00
-  reminders:
-    - minutes: 0
+  - kind: "Splittable"
+    title: "Studia"
+    min_time:
+    shift_start: 02:00:00
+    duration: 05:00:00
+    reminders:
+      - minutes: 0
