@@ -4,6 +4,9 @@ from pathlib import Path
 from typing import Any, Optional, TYPE_CHECKING, overload, Literal, Annotated, Union, Self
 from abc import ABC, abstractmethod
 
+from utilities.core import Paths
+
+
 import pytz
 from pytz import timezone as pytz_timezone
 import yaml
@@ -69,11 +72,11 @@ class EventSession(metaclass=Singleton):
     def add_event(self, event: "SplittableEvent | ShiftableEvent", seconds_left: timedelta):
         self.missing_time.append(ResidualEvent.from_event(event, seconds_left))
 
-    def save(self, filepath: Path = "./pending.json"):
+    def save(self, filepath: Path = Paths.PENDING):
         data = [e.model_dump(mode="json") for e in self.missing_time]
         filepath.write_text(json.dumps(data, indent=4, ensure_ascii=False))
 
-    def load(self, filepath: Path = "./pending.json"):
+    def load(self, filepath: Path = Paths.PENDING):
         if not filepath.exists():
             return
         data = json.loads(filepath.read_text())

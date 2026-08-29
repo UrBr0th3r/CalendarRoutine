@@ -21,6 +21,7 @@ class Paths(metaclass=ImmutableMeta):
     OAUTH = _ROOT / "private" / "OAuth"
     EVENTS = _ROOT / "resources"
     SRC = _ROOT / "src"
+    PENDING = _ROOT / "src" / "pending" / "events.json"
 
 class Singleton(type):
     _instances = {}
