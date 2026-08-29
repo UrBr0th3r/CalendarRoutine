@@ -8,7 +8,7 @@ import pytz
 from pytz import timezone as pytz_timezone
 import yaml
 
-from utilities.core import Singleton
+from utilities.core import Singleton, Serializable
 
 if TYPE_CHECKING:
     from googleapiclient._apis.calendar.v3 import Event as CalendarEvent
@@ -113,10 +113,6 @@ def parse_value_to_datetime(value: datetime|timedelta|str, now_time: Optional[da
         raise TypeError("day_min must be datetime or timedelta or a validating string")
 
 
-class Serializable(ABC):
-    @abstractmethod
-    def JSON(self) -> dict[str, Any]:
-        ...
 
 
 class DailyTask(BaseModel, Serializable):
@@ -469,7 +465,7 @@ class MovableEvent(TimedEvent, ABC):
 
         # 2. Parsing ed estensione di min / max (gestisce sia timedelta che datetime)
         for field_name, alt_key in [("min", "min_time"), ("max", "max_time")]:
-            val = data.get(field_name) if field_name in data else data.pop(alt_key)
+            val = data.get(field_name) if field_name in data else data.pop(alt_key, None)
             if val is not None:
                 if isinstance(val, timedelta):
                     # Se è un timedelta, lo applichiamo a now_time

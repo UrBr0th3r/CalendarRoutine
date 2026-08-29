@@ -13,11 +13,11 @@ from calendarAPI import CalendarManager
 from datetime import datetime, timezone, timedelta
 
 from organization import load
-from organization.event import *
+from event import *
 import requests
 from fastapi import FastAPI, HTTPException
 from pathlib import Path
-from organization.event.event import TimedEvent
+# from organization.event.event import TimedEvent
 from utilities.core import Paths
 
 @asynccontextmanager

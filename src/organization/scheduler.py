@@ -1,9 +1,9 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from calendarAPI import CalendarManager
-from organization.event import EventFactory
-from organization.event.event import TimedEvent
+from event import EventFactory
+from event import TimedEvent
 
 
 cmg = CalendarManager()
@@ -13,7 +13,7 @@ def load(filepath: Path):
 
     es = []
     for id in cmg.get_all_calendar_ids().values():
-        es += (cmg.get_events(id))
+        es += (cmg.get_events(id, start=now, end=now+timedelta(days=1)))
     # ts = cmg.get_tasks()
 
     found = EventFactory.parse_yaml(filepath, override_now_time=now)

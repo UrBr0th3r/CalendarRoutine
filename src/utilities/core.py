@@ -1,6 +1,9 @@
+from abc import ABC, abstractmethod
 from pathlib import Path as _Path
 
-__all__ = ["ImmutableMeta", "Paths", "Singleton"]
+__all__ = ["ImmutableMeta", "Paths", "Singleton", "Serializable"]
+
+from typing import Any
 
 _ROOT = _Path(__file__).resolve().parent.parent.parent
 
@@ -25,3 +28,9 @@ class Singleton(type):
         if cls not in cls._instances:
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
+
+
+class Serializable(ABC):
+    @abstractmethod
+    def JSON(self) -> dict[str, Any]:
+        ...

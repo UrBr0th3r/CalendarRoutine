@@ -12,9 +12,8 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.errors import HttpError
 
-from organization.event.event import Serializable
-from utilities.core import Paths
-from organization.event import possibleAllTypes, FixedEvent, FocusedEvent, DailyTask, FullDayEvent
+from utilities.core import Paths, Serializable
+from event import possibleAllTypes, FixedEvent, FocusedEvent, DailyTask, FullDayEvent
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 if TYPE_CHECKING:
