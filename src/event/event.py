@@ -1157,7 +1157,7 @@ class EventFactory:
             all_data = yaml.safe_load(f)
         config_data = all_data.get("config")
         data = all_data.get("events")
-        now_time_raw = config_data.get("now_time", None)
+        now_time_raw = config_data.get("now_time", None) if config_data else None
         if override_now_time is None and now_time_raw is None:
             override_now_time = datetime.now()
         elif override_now_time is None:
