@@ -17,7 +17,7 @@ class ImmutableMeta(type):
 
 class Paths(metaclass=ImmutableMeta):
     PROJECT = _ROOT
-    PRIVATE = _ROOT / "private"
+    ENV = _ROOT / "private" / ".env"
     OAUTH = _ROOT / "private" / "OAuth"
     EVENTS = _ROOT / "resources"
     SRC = _ROOT / "src"

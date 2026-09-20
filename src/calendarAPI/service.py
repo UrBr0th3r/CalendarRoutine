@@ -16,6 +16,8 @@ from utilities.core import Paths, Serializable
 from event import possibleAllTypes, FixedEvent, FocusedEvent, DailyTask, FullDayEvent
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
+from pytz import timezone as pytz_timezone
+
 if TYPE_CHECKING:
     from googleapiclient._apis.calendar.v3 import CalendarResource
     from googleapiclient._apis.tasks.v1 import TasksResource
@@ -92,7 +94,7 @@ class CalendarManager:
     )
     def get_events(self, calendar_id: str = "primary", start: Optional[datetime] = None, end: Optional[datetime] = None, duration: Optional[timedelta] = None, max_results: int = 10) -> list[possibleAllTypes]:
         if start is None:
-            start = datetime.now()
+            start = datetime.now(pytz_timezone("Europe/Rome"))
         if end is None and duration is not None:
             end = start + duration
 
@@ -115,7 +117,7 @@ class CalendarManager:
     )
     def get_tasks(self, tasklist_id: str = "@default", start: Optional[datetime] = None, end: Optional[datetime] = None, duration: Optional[timedelta] = None, max_results: int = 10):
         if start is None:
-            start = datetime.now()
+            start = datetime.now(pytz_timezone("Europe/Rome"))
         if end is None and duration is not None:
             end = start + duration
 

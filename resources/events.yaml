@@ -73,6 +73,6 @@ events:
     title: "Studia"
     min_time:
     shift_start: 02:00:00
-    duration: 05:00:00
+    duration: 07:00:00
     reminders:
       - minutes: 0

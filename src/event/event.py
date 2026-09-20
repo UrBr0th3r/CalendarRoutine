@@ -91,17 +91,18 @@ _TIMEDELTA_ADAPTER = TypeAdapter(timedelta)
 
 def parse_italian_date(value: datetime|str) -> datetime:
     if isinstance(value, datetime):
+        value = value.astimezone(pytz_timezone("Europe/Rome"))
         return value
     if isinstance(value, str):
         try:
-            return datetime.strptime(value, "%d/%m/%Y %H:%M:%S")
+            return datetime.strptime(value, "%d/%m/%Y %H:%M:%S").astimezone(pytz_timezone("Europe/Rome"))
         except ValueError:
             pass
     return _DATETIME_ADAPTER.validate_python(value)
 
 def parse_value_to_datetime(value: datetime|timedelta|str, now_time: Optional[datetime] = None) -> datetime:
     if now_time is None:
-        now_time = datetime.now()
+        now_time = datetime.now(pytz_timezone("Europe/Rome"))
 
     if isinstance(value, datetime):
         return value
@@ -238,7 +239,7 @@ class TimedEvent(BaseModel, Serializable, ABC):
         # formato relativo: converte in start/end assoluti
         now_raw: Optional[str | datetime] = data.get("now_time", None)
         if now_raw is None:
-            now_time = datetime.now()
+            now_time = datetime.now(pytz_timezone("Europe/Rome"))
         else:
             now_time = parse_italian_date(now_raw)
 
@@ -343,7 +344,7 @@ class TimedEvent(BaseModel, Serializable, ABC):
     ) -> Self:
         # Nessun calcolo qui: passa tutto grezzo, ci pensa il model_validator.
         if now_time is None:
-            now_time = datetime.now()
+            now_time = datetime.now(pytz_timezone("Europe/Rome"))
         return cls(
             shift_start=shift_start,
             shift_end=shift_end,
@@ -357,7 +358,7 @@ class TimedEvent(BaseModel, Serializable, ABC):
         )
 
     def __str__(self):
-        return f"{f"[{self.kind}] " if hasattr(self, "kind") else ""}{self.title}{f": {self.description}" if self.description else ""}. {self.start.strftime('%d/%m/%Y %H:%M:%S')} - {self.end.strftime('%d/%m/%Y %H:%M:%S')}"
+        return f"{f"[{self.kind}] " if hasattr(self, "kind") else ""}{self.title}{f": {self.description}" if self.description else ""}. {self.start.astimezone(pytz.timezone("Europe/Rome")).strftime('%d/%m/%Y %H:%M:%S')} - {self.end.astimezone(pytz.timezone("Europe/Rome")).strftime('%d/%m/%Y %H:%M:%S')}"
 
 class FocusedEvent(TimedEvent):
     kind: Literal["FocusTime"] = "FocusTime"
@@ -1159,7 +1160,7 @@ class EventFactory:
         data = all_data.get("events")
         now_time_raw = config_data.get("now_time", None) if config_data else None
         if override_now_time is None and now_time_raw is None:
-            override_now_time = datetime.now()
+            override_now_time = datetime.now(pytz_timezone("Europe/Rome"))
         elif override_now_time is None:
             override_now_time = parse_italian_date(now_time_raw)
         dur_raw = config_data.get("day_duration", None) if config_data else None
