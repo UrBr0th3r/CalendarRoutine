@@ -12,7 +12,7 @@ import organization
 from calendarAPI import CalendarManager
 from datetime import datetime, timezone, timedelta
 
-from organization import load
+from organization import load, event_test
 from event import *
 import requests
 from fastapi import FastAPI, HTTPException
@@ -53,9 +53,14 @@ def sync_calendar(yaml_path: Optional[str] = None):
         # Registra l'eccezione nei log se necessario
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/test/")
+@app.post("/test/")
 def test():
-    return {"status": "ok"}
+    try:
+        event_test()
+        return {"status": "ok"}
+    except Exception as e:
+        # Registra l'eccezione nei log se necessario
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == '__main__':
 

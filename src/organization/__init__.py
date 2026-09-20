@@ -1,1 +1,1 @@
-from .scheduler import load
+from .scheduler import load, test as event_test

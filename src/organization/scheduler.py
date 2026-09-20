@@ -3,7 +3,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from calendarAPI import CalendarManager
-from event import EventFactory
+from event import EventFactory, FixedEvent
 from event import TimedEvent
 
 from dotenv import load_dotenv
@@ -37,6 +37,12 @@ def load(filepath: Path):
             e.description = f"[ DYNAMICALLY ADDED ]{" "+e.description if e.description else ""}"
             print("Added",e)
             sched_cid = os.getenv("CALENDAR_ID") if not sched_cid else sched_cid
-            cmg.add_events(e, calendar_id=sched_cid if sched_cid else "primary") # CHECK: se pubblicato deve essere rimosso
+            cmg.add_events(e, calendar_id=sched_cid if sched_cid else "primary")
         else:
             print("Skipped",e)
+
+def test():
+    global sched_cid
+    e = FixedEvent(id=None, title="Test", start=datetime.now(timezone.utc), end=datetime.now(timezone.utc)+timedelta(minutes=1))
+    sched_cid = os.getenv("CALENDAR_ID") if not sched_cid else sched_cid
+    cmg.add_events(e, calendar_id=sched_cid if sched_cid else "primary")
