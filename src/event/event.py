@@ -1162,9 +1162,9 @@ class EventFactory:
             override_now_time = datetime.now()
         elif override_now_time is None:
             override_now_time = parse_italian_date(now_time_raw)
-        dur_raw = config_data.get("day_duration", None)
-        max_day_raw = config_data.get("day_max", None)
-        min_day_raw = config_data.get("day_min", None)
+        dur_raw = config_data.get("day_duration", None) if config_data else None
+        max_day_raw = config_data.get("day_max", None) if config_data else None
+        min_day_raw = config_data.get("day_min", None) if config_data else None
         if min_day_raw is None:
             min_day: datetime = override_now_time
         else:
