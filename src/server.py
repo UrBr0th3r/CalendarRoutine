@@ -53,7 +53,7 @@ def sync_calendar(yaml_path: Optional[str] = None):
         # Registra l'eccezione nei log se necessario
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/test/")
+@app.post("/test")
 def test():
     try:
         event_test()
